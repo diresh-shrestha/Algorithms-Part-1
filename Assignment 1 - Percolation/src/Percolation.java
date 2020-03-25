@@ -39,42 +39,45 @@ public class Percolation {
     
     // opens the site (row, col) if it is not open already
     public void open(int i, int j) {
-    	int idx = xyto1D(i, j); //get the index
-    	count += 1;
-    	//if it is the top row, connect it to the virtual top site
-    	if(i==1) {
-    		uf.union(idx, virtualTop);
-    		uf2.union(idx, virtualTop);
+    	if(!(isOpen(i,j))) {
+    		int idx = xyto1D(i, j); //get the index
+        	count += 1;
+        	//if it is the top row, connect it to the virtual top site
+        	if(i==1) {
+        		uf.union(idx, virtualTop);
+        		uf2.union(idx, virtualTop);
+        	}
+        	
+        	//if is is the bottom row, connect it to the virtual bottom site
+        	if(i==N) {
+        		uf.union(idx, virtualBottom);
+        	}
+        	
+        	// Connect to left square
+        	if (!(j==1) && isOpen(i, j-1)) {
+                uf.union(idx, idx-1); 
+                uf2.union(idx, idx-1);
+            }
+        	// Connect to right square
+            if (!(j==N) && isOpen(i, j+1)) {
+            	uf.union(idx, idx+1); 
+            	uf2.union(idx, idx+1);
+            }
+         // connect to top cell
+            if (!(i==1) && isOpen(i-1,j)) {
+            	uf.union(idx, idx-N); 
+            	uf2.union(idx, idx-N); 
+            } 
+         // connect to bottom cell
+            if (!(i==N) && isOpen(i+1,j)) {
+            	uf.union(idx, idx+N); 
+            	uf2.union(idx, idx+N); 
+            
+            }
+       
+        	grid[i-1][j-1] = true;	//set it to open
+        	
     	}
-    	
-    	//if is is the bottom row, connect it to the virtual bottom site
-    	if(i==N) {
-    		uf.union(idx, virtualBottom);
-    	}
-    	
-    	// Connect to left square
-    	if (!(j==1) && isOpen(i, j-1)) {
-            uf.union(idx, idx-1); 
-            uf2.union(idx, idx-1);
-        }
-    	// Connect to right square
-        if (!(j==N) && isOpen(i, j+1)) {
-        	uf.union(idx, idx+1); 
-        	uf2.union(idx, idx+1);
-        }
-     // connect to top cell
-        if (!(i==1) && isOpen(i-1,j)) {
-        	uf.union(idx, idx-N); 
-        	uf2.union(idx, idx-N); 
-        } 
-     // connect to bottom cell
-        if (!(i==N) && isOpen(i+1,j)) {
-        	uf.union(idx, idx+N); 
-        	uf2.union(idx, idx+N); 
-        
-        }
-   
-    	grid[i-1][j-1] = true;	//set it to open
     	
 
     }
