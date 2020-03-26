@@ -2,30 +2,28 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-
-	private Percolation p;
-	private int T;
-	private int count;
-	private double[] frac;
+	private final int T;
+	private final double[] frac;
+	private final static double con= 1.96;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
     	this.T = trials;
-    	
     	if (n <= 0 || T <= 0)
             throw new IllegalArgumentException("N and T should be > 0");
     	
     	frac = new double[T];
     	
-    	for(int k=0; k<T; k++) {
-    		p = new Percolation(n);
-    		while(!(p.percolates())) {
+    	for (int k = 0; k < T; k++) {
+    		final Percolation p = new Percolation(n);
+    		while (!(p.percolates())) {
     			int i = StdRandom.uniform(1, n+1);
     			int j = StdRandom.uniform(1,n+1);
     			p.open(i, j);
     		}
-    		count = p.numberOfOpenSites();
-    		frac[k] = count/(n*n);
+    		int count = p.numberOfOpenSites();
+    		double tot = n*n;
+    		frac[k] = count/tot;
     	}
     	
     	
@@ -44,12 +42,12 @@ public class PercolationStats {
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-    	return mean()-((1.96*stddev())/Math.sqrt(T));
+    	return mean()-((con*stddev())/Math.sqrt(T));
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-    	return mean()+((1.96*stddev())/Math.sqrt(T));
+    	return mean()+((con*stddev())/Math.sqrt(T));
     }
 
    // test client (see below)
