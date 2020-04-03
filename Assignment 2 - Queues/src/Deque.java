@@ -1,11 +1,12 @@
 import java.util.Iterator;
+import edu.princeton.cs.algs4.StdOut;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
 
 	private Node first;
 	private Node last;
-	private int N = 0;
+	private int N;
 	
 	private class Node{
 		Item item;
@@ -15,12 +16,14 @@ public class Deque<Item> implements Iterable<Item> {
     // construct an empty deque
     public Deque() {
     	first = null;
+    	last = null;
+    	N = 0;
   
     }
 
     // is the deque empty?
     public boolean isEmpty() {
-    	return first == null;
+    	return N == 0;
     }
 
     // return the number of items on the deque
@@ -54,15 +57,21 @@ public class Deque<Item> implements Iterable<Item> {
     	if (item == null) {
     		throw new IllegalArgumentException("Null item.");
     	}
-    	
-    	Node oldLast = last;
-    	last = new Node();
-    	last.item = item;
-    	last.next = null;
-    	last.prev = oldLast;
+    	if (isEmpty() || last == null) {
+        	last = new Node();
+        	last.item = item;
+        	first = last;
+        }
+    	else {
+    		Node oldLast = last;
+        	last = new Node();
+        	last.item = item;
+        	last.prev = oldLast;
+        	oldLast.next = last;
+        	last.next = null;
+        	
+    	}
     	N++;
-    	if (isEmpty()) first = last; 
-    	else oldLast.next = last;
     	
     	
     }
@@ -85,19 +94,25 @@ public class Deque<Item> implements Iterable<Item> {
     	if (N == 0) {
     		throw new NoSuchElementException("Queue is Empty.");
     	}
-    	Item item = last.item;
+    	
     	Node oldLast = last;
-    	last = oldLast.prev;
-    	last.next = null;
+    	last = last.prev;
+    	if (last == null) {
+    		first = null;
+    	}
+    	else {
+    		last.next = null;
+    	}
+    	
     	N--;
-    	return item;
+    	return oldLast.item;
     	
     }
 
     // return an iterator over items in order from front to back
     public Iterator<Item> iterator() { return new listIterator(); }
     
-    public class listIterator implements Iterator<Item> {
+    private class listIterator implements Iterator<Item> {
     	private Node current = first; 
     	
     	public boolean hasNext() { return current !=null; }
@@ -120,13 +135,13 @@ public class Deque<Item> implements Iterable<Item> {
     // unit testing (required)
     public static void main(String[] args) {
     	Deque<Integer> d = new Deque<>();
-    	System.out.println("Is Queue empty? " + d.isEmpty());
-    	System.out.println("Adding to front");
+    	StdOut.println("Is Queue empty? " + d.isEmpty());
+    	StdOut.println("Adding to front");
     	d.addFirst(5);
-    	System.out.println("Is Queue empty? " + d.isEmpty());
-    	System.out.println("Adding to back");
+    	StdOut.println("Is Queue empty? " + d.isEmpty());
+    	StdOut.println("Adding to back");
     	d.addLast(6);
-    	System.out.println("Adding to front");
+    	StdOut.println("Adding to front");
     	d.addFirst(4);
     	d.addFirst(3);
     	d.addFirst(2);
